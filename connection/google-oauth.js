@@ -10,7 +10,7 @@ passport.use(
         {
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: "https://prickly-dove-knickers.cyclic.app/google/auth/google/callback",
+            callbackURL: "https://beige-swordfish-wear.cyclic.app/google/auth/google/callback",
         },
         async function (accessToken, refreshToken, profile, cb) {
             await redisclient.SET("tokens", JSON.stringify({ "token": accessToken }));
