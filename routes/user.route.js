@@ -4,7 +4,6 @@ const bcrypt = require("bcrypt")
 const blacklist = require("../models/blacklisting")
 const authenticate = require("../middelwares/authentication")
 const jwt = require("jsonwebtoken")
-const redisclient  = require('../connection/redis') ;
 
 
 userRouter.get("/allusers", async (req, res)=>{
@@ -14,6 +13,16 @@ userRouter.get("/allusers", async (req, res)=>{
     } catch (error) {
         console.log(error)
         res.status(400).send({"msg": "Erron in getting all users"})
+    }
+})
+
+userRouter.get("/:id", async (req, res)=>{
+    try {
+        const UserData = await UserModel.findOne({_id :req.params.id})
+        res.json(UserData)
+    } catch (error) {
+        console.log(error)
+        res.status(400).send({"msg": "Erron in getting user"})
     }
 })
 
@@ -33,6 +42,7 @@ userRouter.post("/signup", async (req, res)=>{
     }
 })
 
+
 userRouter.post("/login", async (req, res)=>{
     try {
         const {email, password}= req.body
@@ -44,14 +54,10 @@ userRouter.post("/login", async (req, res)=>{
         const normaltoken = jwt.sign({ userId: user._id }, process.env.normalkey, { expiresIn: "1h" });
         const refreshtoken = jwt.sign({ userId: user._id }, process.env.refreshkey, { expiresIn: "6h" });
 
-        res.send({"msg":user.name})
         res.cookie("normaltoken", normaltoken, {maxAge: 1000*60*60})
-        res.cookie("refreshtoken", refreshtoken, { maxAge: 1000 * 60 * 60 * 6 })
-        
-        await redisclient.SET(user.email, JSON.stringify({ token }));
-        res.cookie("email", `${user.email}`);
+        res.cookie("refreshtoken", refreshtoken, {maxAge: 1000*60*60*6})
 
-        res.send({msg: "Login Successful"}).json({token,email,id:user.id});
+        res.json({msg: "Login Successful", id: user._id, name: user.name})
     } catch (error) {
         console.log(error)
         res.send({msg:"Error while loging in"})
@@ -110,20 +116,20 @@ userRouter.delete("/delete/:id", async(req, res) => {
     }
 })
 
-userRouter.patch("/updateName", async (req, res)=>{
-    const {name, email, password} = req.body
-    try {
-        const data = await UserModel.findOne({ email })
-        if (name) {
-            data.name = name;
-        }
-        await data.save()
+// userRouter.patch("/updateName", async (req, res)=>{
+//     const {fistname, lastname, email, password} = req.body
+//     try {firstn
+//         const data = await UserModel.findOne({ email })
+//         if (firstname) {
+//             data.firstname = name;
+//         }
+//         await data.save()
         
-    } catch (error) {
-        console.log(error)
-        res.json({"msg": "Something wrong"})
-    }
-})
+//     } catch (error) {
+//         console.log(error)
+//         res.json({"msg": "Something wrong"})
+//     }
+// })
 
 userRouter.patch("/updatePassword/:id", async (req, res) => {
     const _id = req.params.id;

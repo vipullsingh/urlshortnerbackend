@@ -1,6 +1,9 @@
 const express = require("express")
 const app = express()
 app.use(express.json())
+const cors = require("cors")
+app.use(cors({origin:"*"}));
+
 require("dotenv").config()
 const cookieParser = require("cookie-parser")
 app.use(cookieParser())
@@ -8,7 +11,7 @@ const connection = require("./connection/db")
 const urlRouter = require("./routes/url.route")
 const url = require("./models/urlmodel")
 const userRouter = require("./routes/user.route")
-const { detailUserRoute } = require("./routes/detailroute");
+
 const { googlerouter } = require("./login-routes/g-oauthroute")
 const { githubRouter } = require("./login-routes/github.route")
 
@@ -16,6 +19,7 @@ app.use("/url", urlRouter)
 app.use("/google", googlerouter)
 app.use("/", githubRouter)
 app.use("/user", userRouter)
+
 app.get("/", (req, res)=>{
 
     res.send(`<h1>Welcome</h1>`)

@@ -19,10 +19,18 @@ githubRouter.get(
     }),
     function (req, res) {
         let user = req.user;
-        res.redirect(`http://127.0.0.1:5501/frontend/dashboard.html?id=${user._id}&name= ${user.name}`);
+        res.redirect(`http://localhost:5500/Frontend/dashboard.html?id=${user._id}&name=${user.name}`);
 
     }
 );
 
 module.exports = { githubRouter };
 
+
+// githubRouter.get("/login", (req, res) => {
+//   let z = String(user._id);
+//   // res.cookie("user", JSON.stringify(req.user));
+//   res.cookie("user", z);
+//   // let X = path.join(__dirname + "/../../frontend/masseges.html");
+//   res.sendFile(X);
+// });

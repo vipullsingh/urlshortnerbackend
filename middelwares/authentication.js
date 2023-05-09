@@ -8,33 +8,20 @@ const {UserModel} = require("../models/user.models")
 const blacklist = require("../models/blacklisting")
 
 const authenticate = async (req, res, next)=>{
-    const token = req.cookies.normaltoken || req.headers.authenticate 
-    
-    // if (!token) return res.send({"msg": "Please Login"})
+    const token = req.cookies.normaltoken || req.headers.authenticate
+    if (!token) return res.send({"msg": "Please Login"})
     try {
         const isBlacklisted = await blacklist.findOne({ normaltoken: token })
-        if (isBlacklisted) return res.send({ "msg": "You have logged out" })
+        if (isBlacklisted) return res.send({"msg": "You have logged out"})
         const decoded = jwt.verify(token, process.env.normalkey)
-        console.log(decoded)
-
-        // const cookieMail = req.cookies.email;
-        // const tokens = JSON.parse(await redisclient.GET(cookieMail));
-        // const blacklistToken = await redisclient.HGET("blockedToken", cookieMail);
-
-        // if (blacklistToken == tokens.token) {
-        //     return res.send("Userloggedout Please login Again");
-        // }
-        // const decodedverifyToken = jwt.verify(tokens.token, process.env.normalkey);
-        // const { user_id } = decodedverifyToken;
-        // // old user
-        // const user = await UserModel.findById(user_id);
-        // if (!user) {
-        //     return res.status(401).json({ message: "You are not authorized" });
-        // }
-        // req.user = user;
-        
-        
-        next()
+        // console.log(decoded)
+        if (decoded) {
+            res.locals.userId = decoded.userId;
+            // console.log(decoded)
+            next()
+        } else {
+            return  res.send({"msg": "Login again"})
+        }
     } catch (error) {
         console.log(error)
         res.send(error)
