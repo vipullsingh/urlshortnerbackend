@@ -19,7 +19,7 @@ githubRouter.get(
     }),
     function (req, res) {
         let user = req.user;
-        res.redirect(`http://localhost:5500/Frontend/dashboard.html?id=${user._id}&name=${user.name}`);
+        res.redirect(`https://lacking-berry-1088.netlify.app/dashboard.html?id=${user._id}&name=${user.name}`);
 
     }
 );
