@@ -1,23 +1,27 @@
 const express = require("express")
+const app = express()
 const urlRouter = express.Router()
 const url = require("../models/urlmodel");
 const authenticate = require("../middelwares/authentication");
 
-urlRouter.post("/assign", async(req, res)=>{
-    try {
-        const {longurl, id} = req.body;
-        if (!longurl) return res.json({msg: "Please Provide URL"})
+
+// urlRouter.post("/assign", async(req, res)=>{
+//     try {
+//         const {longurl, id} = req.body;
+//         if (!longurl) return res.json({msg: "Please Provide URL"})
         
-        const newurl = new url({longurl, author: id})
+//         const newurl = new url({longurl, author: id})
         
-        // console.log(res.locals)
-        await newurl.save()
-        res.send(newurl)
-    } catch (error) {
-        console.log(error)
-        res.send(error)
-    }
-})
+//         // console.log(res.locals)
+//         await newurl.save()
+//         res.send(newurl)
+//     } catch (error) {
+//         console.log(error)
+//         res.send(error)
+//     }
+// })
+
+
 
 urlRouter.get("/:id", async(req, res)=>{
     try {
